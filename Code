@@ -1,0 +1,279 @@
+import pygame
+import sys
+import os
+import PIL
+from random import randint
+
+import pygame.image
+
+pygame.init()
+screen = pygame.display.set_mode((1920, 1080))
+clock = pygame.time.Clock()
+pygame.display.set_caption("Gaming grandpa")
+
+# Defining Player --------------------
+class Player(pygame.sprite.Sprite):
+    def __init__(self, posX, posY, moveX, moveY, facingright, facingup):
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load('files/playerAFK1.png'), (500, 500))
+        self.rect = self.image.get_rect()
+        self.hitbox = self.rect.inflate(-330, -250)
+        self.hitbox.x = posX
+        self.hitbox.y = posY
+        self.moveX = moveX
+        self.moveY = moveY
+        self.hitbox.move_ip(-345, -360)
+        self.facingright = facingright
+        self.facingup = facingup
+
+    def update(self):
+        global afkTime
+        global walking
+        global walkingAni
+        global afk
+
+        pygame.draw.rect(screen, (255, 0, 0), player.hitbox, 2)
+
+        if not walking and not afk:
+            if self.facingright:
+                self.image = pygame.image.load('files/playerAFK1.png')
+                afk = True
+            if not self.facingright:
+                self.image = pygame.image.load('files/playerAFK1.png')
+                self.image = pygame.transform.flip(self.image, True, False)
+                afk = True
+
+        if afk:
+            if self.facingright:
+                if afkTime % 60 == 1:
+                    self.image = pygame.image.load('files/playerAFK6.png')
+                if afkTime % 60 == 30:
+                    self.image = pygame.image.load('files/playerAFK1.png')
+            if not self.facingright:
+                if afkTime % 60 == 1:
+                    self.image = pygame.image.load('files/playerAFK6.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                if afkTime % 60 == 30:
+                    self.image = pygame.image.load('files/playerAFK1.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+
+        if afkTime >= 300:
+            afkTime = 0
+
+        key = pygame.key.get_pressed()
+        if key[pygame.K_w]:
+            self.rect.y -= self.moveY
+            self.hitbox.move_ip(0, -self.moveY)
+            walking = True
+            if walkingAni % 5 == 0 and walking:
+                if self.facingright:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    afk = False
+                elif not self.facingright:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+            if walkingAni % 5 == 1 and walking:
+                if self.facingright:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    afk = False
+                elif not self.facingright:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+            if walkingAni % 5 == 2 and walking:
+                if self.facingright:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    afk = False
+                elif not self.facingright:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+            if walkingAni % 5 == 3 and walking:
+                if self.facingright:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    afk = False
+                elif not self.facingright:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+        if key[pygame.K_s]:
+            self.rect.y += self.moveY
+            self.hitbox.move_ip(0, self.moveY)
+            walking = True
+            if self.facingright:
+                if walkingAni % 5 == 0 and walking:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    afk = False
+                if walkingAni % 5 == 1 and walking:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    afk = False
+                if walkingAni % 5 == 2 and walking:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    afk = False
+                if walkingAni % 5 == 3 and walking:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    afk = False
+            if not self.facingright:
+                if walkingAni % 5 == 0 and walking:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+                if walkingAni % 5 == 1 and walking:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+                if walkingAni % 5 == 2 and walking:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+                if walkingAni % 5 == 3 and walking:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+        if key[pygame.K_d]:
+            self.rect.x += self.moveX
+            self.hitbox.move_ip(self.moveX, 0)
+            walking = True
+            if self.facingright:
+                if walkingAni % 5 == 0 and walking:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    afk = False
+                if walkingAni % 5 == 1 and walking:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    afk = False
+                if walkingAni % 5 == 2 and walking:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    afk = False
+                if walkingAni % 5 == 3 and walking:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    afk = False
+            if not self.facingright:
+                if walkingAni % 5 == 0 and walking:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = True
+                    afk = False
+                if walkingAni % 5 == 1 and walking:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = True
+                    afk = False
+                if walkingAni % 5 == 2 and walking:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = True
+                    afk = False
+                if walkingAni % 5 == 3 and walking:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = True
+                    afk = False
+        if key[pygame.K_a]:
+            self.rect.x -= self.moveX
+            self.hitbox.move_ip(-self.moveX, 0)
+            walking = True
+            if self.facingright:
+                if walkingAni % 5 == 0 and walking:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = False
+                    afk = False
+                if walkingAni % 5 == 1 and walking:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = False
+                    afk = False
+                if walkingAni % 5 == 2 and walking:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = False
+                    afk = False
+                if walkingAni % 5 == 3 and walking:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    self.facingright = False
+                    afk = False
+            if not self.facingright:
+                if walkingAni % 5 == 0 and walking:
+                    self.image = pygame.image.load('files/playerRunning1.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+                if walkingAni % 5 == 1 and walking:
+                    self.image = pygame.image.load('files/playerRunning2.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+                if walkingAni % 5 == 2 and walking:
+                    self.image = pygame.image.load('files/playerRunning3.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+                if walkingAni % 5 == 3 and walking:
+                    self.image = pygame.image.load('files/playerRunning4.png')
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    afk = False
+        # Quits game with ESCAPE KEY
+        elif key[pygame.K_ESCAPE]:
+            pygame.quit()
+            sys.exit()
+        else:
+            walking = False
+
+        walkingAni += 1
+        if walkingAni >= 20:
+            walkingAni = 0
+
+
+afkTime = 0
+walkingAni = 0
+walking = False
+afk = True
+playerGroup = pygame.sprite.Group()
+player = Player(500, 500, 15, 15, True, False)
+playerGroup.add(player)
+
+# Defining Obstacles
+class Small(pygame.sprite.Sprite):
+    def __init__(self, posX, posY):
+        super().__init__()
+        self.image = pygame.image.load("files/rock1.png")
+        self.rect = self.image.get_rect()
+        self.rect = (posX, posY)
+        self.x = posX
+        self.y = posY
+
+    def update(self):
+        pygame.draw.rect(screen, (255, 0, 0), (smallRock.x, smallRock.y, 77, 75), 2)
+
+
+obsGroup = pygame.sprite.Group()
+smallRock = Small(800, 600)
+obsGroup.add(smallRock)
+
+# Checking for collision
+
+def collide():
+    pass
+
+
+# Defining Background ----------------------------------
+
+bgImage = pygame.image.load('files/Spawn Floor2.png')
+
+# Main Code ---------------------------------
+game = True
+while game:
+    for e in pygame.event.get():
+      if e.type == pygame.QUIT:
+        pygame.quit()
+        sys.exit()
+
+    screen.blit(bgImage, (0, 0))
+
+    afkTime += 1
+    playerGroup.update()
+    playerGroup.draw(screen)
+    smallRock.update()
+    obsGroup.draw(screen)
+
+    pygame.display.update()
+    clock.tick(60)
